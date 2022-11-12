@@ -4,11 +4,10 @@ import pandas as pd
 import os
 os.chdir("D:/Document/专业课类/数字图像处理/Project/assets/")
 
-img = cv2.imread('H-hight.png')
+img = cv2.imread('fire2.jpg')
 cv2.namedWindow("RESULT",cv2.WINDOW_NORMAL)
-cv2.namedWindow("test",cv2.WINDOW_NORMAL)
-redThre = 20   # 115~135红色分量阈值
-sThre = 50  # 55~65饱和度阈值
+redThre = 135  # 115~135红色分量阈值
+sThre = 60  # 55~65饱和度阈值
 
 B = img[:, :, 0]
 G = img[:, :, 1]
@@ -17,8 +16,11 @@ R = img[:, :, 2]
 B1 = img[:, :, 0] / 255
 G1 = img[:, :, 1] / 255
 R1 = img[:, :, 2] / 255
+# minValue = np.array(
+#     np.where(R1 <= G1, np.where(G1 <= B1, R1, np.where(R1 <= B1, R1, B1)), np.where(G1 <= B1, G1, B1)))
 minValue = np.array(
-    np.where(R1 <= G1, np.where(G1 <= B1, R1, np.where(R1 <= B1, R1, B1)), np.where(G1 <= B1, G1, B1)))
+    np.where(R1 <= G1, np.where(R1 <= B1, R1, B1),np.where(G1 <= B1, G1, B1))
+)
 sumValue = R1 + G1 + B1
 # HSI中S分量计算公式
 S = np.array(np.where(sumValue != 0, (1 - 3.0 * minValue / sumValue), 0))
@@ -34,7 +36,6 @@ gray_fireImg[:, :, 0] = fireImg
 meBImg = cv2.medianBlur(gray_fireImg, 5)
 kernel = np.ones((5, 5), np.uint8)
 ProcImg = cv2.dilate(meBImg, kernel)
-cv2.imshow("test",ProcImg)
 #绘制矩形框
 contours, _ = cv2.findContours(ProcImg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 ResImg = img.copy()
