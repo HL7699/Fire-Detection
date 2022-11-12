@@ -1,2 +1,2 @@
 # fire-detection
-Toy level fire detection based on digital image processing
+Toy level frame detection based on digital image processing
